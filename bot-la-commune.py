@@ -246,6 +246,16 @@ def getMemberLevel(member):
 			level = max(level, 6)
 	return level
 
+def log(message):
+	author = message.author
+	channel = message.channel
+	server = message.server
+	content = message.content
+	
+	for c in server.channels:
+		if c.name == "log_commandes_bot":
+			await client.send_message(c,"Sur le salon <#" + channel.id + ">, <@" author.id + "> a utilis� la commande : `" + content)
+	
 @client.event
 async def on_ready():
 	print("* Bot "+client.user.name+" logged successfully")
@@ -534,6 +544,7 @@ async def on_message(message):
 					return
 				
 				msgFound = await client.get_message(msgChan, msgId)
+				log(message)
 				await client.edit_message(msgFound, msgText)
 				await client.delete_message(message)
 				
@@ -566,6 +577,7 @@ async def on_message(message):
 				msgFound = await client.get_message(msgChan, msgId)
 				msgText = msgFound.content
 				msgText = msgText.replace("```", "'''")
+				log(message)
 				await client.delete_message(msgFound)
 				await client.send_message(message.channel, "Message supprimé :```\n"+msgText+"\n```")
 				sharedMessagesToDelete.append(msgId);
@@ -626,6 +638,7 @@ async def on_message(message):
 					if member:
 						levelAuthor = getMemberLevel(message.author)
 						levelMember = getMemberLevel(member)
+						log(message)
 						if levelAuthor < 2:
 							await client.send_message(message.channel, "Vous devez être admis-e pour utiliser cette commande.")
 						elif member.id == message.author.id:
@@ -670,6 +683,7 @@ async def on_message(message):
 					if member:
 						levelAuthor = getMemberLevel(message.author)
 						levelMember = getMemberLevel(member)
+						log(message)
 						if levelAuthor < 2:
 							await client.send_message(message.channel, "Vous devez être admis-e pour utiliser cette commande.")
 						elif member.id == message.author.id:
@@ -725,6 +739,7 @@ async def on_message(message):
 			optShort = False
 			duration = 24
 			defaultVoteType = "default"
+			log(message)
 			while nextParam < len(msgKeywords):
 				if msgKeywords[nextParam] == "live":
 					optLive = True
